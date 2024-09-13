@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'create_page.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -8,7 +10,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CreatePage(),
+            ),
+          );
+        },
         child: Icon(
           Icons.add,
         ),
