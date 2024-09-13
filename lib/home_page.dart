@@ -7,22 +7,25 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(
+          Icons.add,
+        ),
+      ),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.blue,
         title: const Column(
           children: [
             Text(
               'Welcome back !',
               style: TextStyle(
-                color: Colors.white,
                 fontSize: 17,
               ),
             ),
             Text(
               'lbar sidati',
               style: TextStyle(
-                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -31,17 +34,21 @@ class HomePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
-        child: Row(
+        child: Column(
           children: [
-            Expanded(
-              child: Container(
-                child: Text(
-                  DateFormat.yMMMMEEEEd().format(
-                    DateTime.now(),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: Text(
+                      DateFormat.yMMMMEEEEd().format(
+                        DateTime.now(),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            )
+                )
+              ],
+            ),
           ],
         ),
       ),
