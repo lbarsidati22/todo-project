@@ -93,7 +93,20 @@ class _CreatePageState extends State<CreatePage> {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(body),
     );
-    log('Response status: ${responce.statusCode}');
-    log('Response body: ${responce.body}');
+    if (responce.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Created'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Oops samething is rong'),
+        ),
+      );
+    }
   }
 }
