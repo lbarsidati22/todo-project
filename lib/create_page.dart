@@ -87,20 +87,13 @@ class _CreatePageState extends State<CreatePage> {
       "description": descorationCon.text,
       "is_completed": false,
     };
-    var url = Uri.parse('https://api.nstack.in/v1/todos');
+    var url = Uri.parse("https://api.nstack.in/v1/todos");
     var responce = await http.post(
       url,
-      headers: {'accept': 'application/json'},
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode(body),
     );
-
-    // var url = Uri.https('api.nstack.in', 'v1/todos');
-    // var response = await http.post(url, body: {
-    //   "title": "string2222",
-    //   "description": "string",
-    //   "is_completed": "false",
-    // });
-    // log('Response status: ${response.statusCode}');
-    // log('Response body: ${response.body}');
+    log('Response status: ${responce.statusCode}');
+    log('Response body: ${responce.body}');
   }
 }
