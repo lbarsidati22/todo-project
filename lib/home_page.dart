@@ -1,11 +1,27 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 import 'create_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  List myData = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,5 +78,17 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> fetchData() async {
+    var url = Uri.parse("https://api.nstack.in/v1/todos");
+    var responce = await http.get(url);
+    if (responce.statusCode == 200) {
+      Map<String, dynamic> json = jsonDecode(responce.body);
+      setState(() {
+        myData = json["items"];
+      });
+      print(myData);
+    }
   }
 }
