@@ -70,22 +70,90 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                )
+                ),
+                IconButton(
+                  onPressed: () {
+                    fetchData();
+                  },
+                  icon: Icon(
+                    Icons.refresh,
+                  ),
+                ),
               ],
             ),
             Expanded(
                 child: ListView.builder(
                     itemCount: myData.length,
                     itemBuilder: (context, index) {
-                      Map<String, dynamic> data = myData[index];
+                      Map<String, dynamic> data =
+                          myData.reversed.toList()[index];
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(data['title']),
-                            Text(data['description']),
-                            Text(data['is_completed'].toString()),
-                          ],
+                        child: Container(
+                          padding: EdgeInsets.all(
+                            14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(.5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    data['title'],
+                                    style: TextStyle(
+                                      decoration: data['is_completed']
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      data['description'],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    DateFormat.yMMMEd().format(
+                                      DateTime.parse(
+                                        data['created_at'].toString(),
+                                      ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (contest) => CreatePage(),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(Icons.edit),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                  Checkbox(
+                                      value: data['is_completed'],
+                                      onChanged: (value) {})
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     })),
