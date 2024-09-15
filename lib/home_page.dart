@@ -73,6 +73,22 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
+            Expanded(
+                child: ListView.builder(
+                    itemCount: myData.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> data = myData[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Text(data['title']),
+                            Text(data['description']),
+                            Text(data['is_completed'].toString()),
+                          ],
+                        ),
+                      );
+                    })),
           ],
         ),
       ),
