@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class CreatePage extends StatefulWidget {
-  const CreatePage({super.key});
+  Map? itemData;
+  CreatePage({super.key, this.itemData});
 
   @override
   State<CreatePage> createState() => _CreatePageState();
@@ -12,6 +13,18 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   TextEditingController titleCon = TextEditingController();
   TextEditingController descorationCon = TextEditingController();
+  bool isEdit = false;
+  @override
+  void initState() {
+    final data = widget.itemData;
+    if (widget.itemData != null) {
+      isEdit = true;
+      titleCon.text = data!['title'];
+      descorationCon.text = data['description'];
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +76,9 @@ class _CreatePageState extends State<CreatePage> {
                           ),
                         ),
                         onPressed: () {
-                          postData();
+                          isEdit ? updateData() : postData();
                         },
-                        child: Text('Create'),
+                        child: Text(isEdit ? 'update' : "Create"),
                       ),
                     ),
                   ),
@@ -96,6 +109,37 @@ class _CreatePageState extends State<CreatePage> {
         SnackBar(
           backgroundColor: Colors.green,
           content: Text('Created'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Oops samething is rong'),
+        ),
+      );
+    }
+  }
+
+  //update
+  updateData() async {
+    final id = widget.itemData!['_id'];
+    final body = {
+      "title": titleCon.text,
+      "description": descorationCon.text,
+      "is_completed": false,
+    };
+    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
+    final responce = await http.put(
+      url,
+      body: jsonEncode(body),
+      headers: {"Content-Type": "application/json"},
+    );
+    if (responce.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Updated'),
         ),
       );
     } else {

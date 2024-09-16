@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const CreatePage(),
+              builder: (context) => CreatePage(),
             ),
           );
         },
@@ -137,7 +137,9 @@ class _HomePageState extends State<HomePage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (contest) => CreatePage(),
+                                          builder: (contest) => CreatePage(
+                                            itemData: data,
+                                          ),
                                         ),
                                       );
                                     },
