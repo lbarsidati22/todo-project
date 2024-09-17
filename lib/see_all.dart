@@ -1,21 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'package:todo_project/see_all.dart';
 
 import 'create_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class SeeAll extends StatefulWidget {
+  const SeeAll({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<SeeAll> createState() => _SeeAllState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _SeeAllState extends State<SeeAll> {
   @override
   void initState() {
     fetchData();
@@ -40,70 +37,28 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              fetchData();
+            },
+            icon: Icon(
+              Icons.refresh,
+            ),
+          ),
+        ],
         centerTitle: true,
-        title: const Column(
-          children: [
-            Text(
-              'Welcome back !',
-              style: TextStyle(
-                fontSize: 17,
-              ),
-            ),
-            Text(
-              'lbar sidati',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        title: const Text(
+          'All Tasks',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    child: Text(
-                      DateFormat.yMMMMEEEEd().format(
-                        DateTime.now(),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    fetchData();
-                  },
-                  icon: Icon(
-                    Icons.refresh,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Text('Today task\s'),
-              ],
-            ),
-            Row(
-              children: [
-                Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (contetx) => const SeeAll(),
-                      ),
-                    );
-                  },
-                  child: Text('See all'),
-                ),
-              ],
-            ),
             Expanded(
                 child: ListView.builder(
                     itemCount: myData.length,
@@ -232,14 +187,14 @@ class _HomePageState extends State<HomePage> {
     if (responce.statusCode == 200) {
       Map<String, dynamic> json = jsonDecode(responce.body);
       myData = json["items"];
-      final filterList = myData
-          .where((element) => (DateFormat.yMMMEd()
-                  .format(DateTime.parse(element['updated_at'])) ==
-              DateFormat.yMMMEd().format(DateTime.now())))
-          .toList();
+      // final filterList = myData
+      //     .where((element) => (DateFormat.yMMMEd()
+      //             .format(DateTime.parse(element['updated_at'])) ==
+      //         DateFormat.yMMMEd().format(DateTime.now())))
+      //     .toList();
       setState(() {
-        // myData = json["items"];
-        myData = filterList;
+        myData = json["items"];
+        // myData = filterList;
       });
       print(myData);
     }

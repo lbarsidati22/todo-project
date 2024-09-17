@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_project/home_page.dart';
 
 void main() {
@@ -10,12 +13,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: const HomePage(),
-      theme: ThemeData(
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) {
+        Service();
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        home: const HomePage(),
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
       ),
     );
   }
