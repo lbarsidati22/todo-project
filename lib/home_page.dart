@@ -81,6 +81,20 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            Row(
+              children: [
+                Text('Today task\s'),
+              ],
+            ),
+            Row(
+              children: [
+                Spacer(),
+                GestureDetector(
+                  onTap: () {},
+                  child: Text('See all'),
+                ),
+              ],
+            ),
             Expanded(
                 child: ListView.builder(
                     itemCount: myData.length,
@@ -146,7 +160,38 @@ class _HomePageState extends State<HomePage> {
                                     icon: Icon(Icons.edit),
                                   ),
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              icon: Icon(
+                                                Icons.wrong_location,
+                                              ),
+                                              title: Text('Alertt'),
+                                              shadowColor: Colors.black,
+                                              elevation: 40,
+                                              content: Text(
+                                                'are you sure ?',
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    deleteById(data["_id"]);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Yes'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('No'),
+                                                )
+                                              ],
+                                            );
+                                          });
+                                    },
                                     icon: Icon(Icons.delete),
                                   ),
                                   Checkbox(
@@ -177,8 +222,15 @@ class _HomePageState extends State<HomePage> {
     var responce = await http.get(url);
     if (responce.statusCode == 200) {
       Map<String, dynamic> json = jsonDecode(responce.body);
+      myData = json["items"];
+      // final filterList = myData
+      //     .where((element) => (DateFormat.yMMMEd()
+      //             .format(DateTime.parse(element['updated_at'])) ==
+      //         DateFormat.yMMMEd().format(DateTime.now())))
+      //     .toList();
       setState(() {
         myData = json["items"];
+        // myData = filterList;
       });
       print(myData);
     }
@@ -204,6 +256,13 @@ class _HomePageState extends State<HomePage> {
       headers: {"Content-Type": "application/json"},
     );
     print(responce.statusCode);
+    fetchData();
+  }
+
+  //delete
+  deleteById(String id) async {
+    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
+    await http.delete(url);
     fetchData();
   }
 }
