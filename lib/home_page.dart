@@ -151,7 +151,14 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Checkbox(
                                       value: data['is_completed'],
-                                      onChanged: (value) {})
+                                      onChanged: (value) {
+                                        check(
+                                          value!,
+                                          index,
+                                          data['title'],
+                                          data['description'],
+                                        );
+                                      })
                                 ],
                               ),
                             ],
@@ -175,5 +182,28 @@ class _HomePageState extends State<HomePage> {
       });
       print(myData);
     }
+  }
+
+  //chek
+  check(
+    bool check,
+    int index,
+    String title,
+    String desc,
+  ) async {
+    final id = myData[index]['_id'];
+    final body = {
+      "title": title,
+      "description": desc,
+      "is_completed": check,
+    };
+    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
+    final responce = await http.put(
+      url,
+      body: jsonEncode(body),
+      headers: {"Content-Type": "application/json"},
+    );
+    print(responce.statusCode);
+    fetchData();
   }
 }
