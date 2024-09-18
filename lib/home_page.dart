@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:todo_project/provider.dart';
 import 'package:todo_project/see_all.dart';
+import 'package:todo_project/style_colors.dart';
 
 import 'create_page.dart';
 
@@ -18,15 +20,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    fetchData();
+    Provider.of<Service>(context, listen: false).fetchDataProvider();
+    // fetchData();
     super.initState();
   }
 
-  List myData = [];
   @override
   Widget build(BuildContext context) {
+    List myData = Provider.of<Service>(context).myData;
     return Scaffold(
+      backgroundColor: kBlackColor,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: kDrangColor,
         onPressed: () {
           Navigator.push(
             context,
@@ -37,9 +42,12 @@ class _HomePageState extends State<HomePage> {
         },
         child: Icon(
           Icons.add,
+          color: kWhightColor,
         ),
       ),
       appBar: AppBar(
+        foregroundColor: kWhightColor,
+        backgroundColor: kBlackColor,
         centerTitle: true,
         title: const Column(
           children: [
@@ -66,22 +74,47 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        12,
+                      ),
+                      color: kDrangColor,
+                    ),
                     child: Text(
                       DateFormat.yMMMMEEEEd().format(
                         DateTime.now(),
                       ),
+                      style: TextStyle(
+                        color: kWhightColor,
+                      ),
                     ),
                   ),
                 ),
+                SizedBox(
+                  width: 10,
+                ),
                 IconButton(
+                  style: IconButton.styleFrom(
+                    backgroundColor: kBlack2Color,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.all(11),
+                  ),
                   onPressed: () {
-                    fetchData();
+                    Provider.of<Service>(context, listen: false)
+                        .fetchDataProvider();
                   },
                   icon: Icon(
                     Icons.refresh,
+                    color: kWhightColor,
                   ),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 14,
             ),
             Row(
               children: [
@@ -100,9 +133,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-                  child: Text('See all'),
+                  child: Container(
+                    padding: EdgeInsets.all(11),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: kBlack2Color,
+                    ),
+                    child: Text('See all'),
+                  ),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 14,
             ),
             Expanded(
                 child: ListView.builder(
@@ -117,7 +160,8 @@ class _HomePageState extends State<HomePage> {
                             14,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(.5),
+                            color: kBlack2Color,
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,6 +185,9 @@ class _HomePageState extends State<HomePage> {
                                   Expanded(
                                     child: Text(
                                       data['description'],
+                                      style: TextStyle(
+                                        color: kGreyColor,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -152,6 +199,9 @@ class _HomePageState extends State<HomePage> {
                                       DateTime.parse(
                                         data['created_at'].toString(),
                                       ),
+                                    ),
+                                    style: TextStyle(
+                                      color: kGreyColor,
                                     ),
                                   ),
                                   Spacer(),
@@ -166,7 +216,10 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       );
                                     },
-                                    icon: Icon(Icons.edit),
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: kGreenColor,
+                                    ),
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -174,10 +227,16 @@ class _HomePageState extends State<HomePage> {
                                           context: context,
                                           builder: (context) {
                                             return AlertDialog(
+                                              backgroundColor: kBlack2Color,
                                               icon: Icon(
-                                                Icons.wrong_location,
+                                                Icons.warning,
+                                                color: kRedColor,
+                                                size: 35,
                                               ),
-                                              title: Text('Alertt'),
+                                              title: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text('Alertt'),
+                                              ),
                                               shadowColor: Colors.black,
                                               elevation: 40,
                                               content: Text(
@@ -185,32 +244,58 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               actions: [
                                                 TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    backgroundColor: kRedColor,
+                                                  ),
                                                   onPressed: () {
-                                                    deleteById(data["_id"]);
+                                                    Provider.of<Service>(
+                                                            context)
+                                                        .deleteById(
+                                                      data["_id"],
+                                                    );
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('Yes'),
+                                                  child: Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                        color: kWhightColor),
+                                                  ),
                                                 ),
                                                 TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    backgroundColor: kGreyColor,
+                                                  ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('No'),
+                                                  child: Text('No',
+                                                      style: TextStyle(
+                                                          color: kWhightColor)),
                                                 )
                                               ],
                                             );
                                           });
                                     },
-                                    icon: Icon(Icons.delete),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: kRedColor,
+                                    ),
                                   ),
                                   Checkbox(
+                                      side: BorderSide(
+                                        color: kWhightColor,
+                                      ),
+                                      shape: CircleBorder(
+                                          side: BorderSide(
+                                        color: kWhightColor,
+                                      )),
                                       value: data['is_completed'],
                                       onChanged: (value) {
-                                        check(
-                                          value!,
-                                          index,
-                                          data['title'],
-                                          data['description'],
+                                        Provider.of<Service>(context).check(
+                                          check: value!,
+                                          title: data['title'],
+                                          id2: data['_id'],
+                                          desc: data['description'],
                                         );
                                       })
                                 ],
@@ -226,52 +311,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> fetchData() async {
-    var url = Uri.parse("https://api.nstack.in/v1/todos");
-    var responce = await http.get(url);
-    if (responce.statusCode == 200) {
-      Map<String, dynamic> json = jsonDecode(responce.body);
-      myData = json["items"];
-      final filterList = myData
-          .where((element) => (DateFormat.yMMMEd()
-                  .format(DateTime.parse(element['updated_at'])) ==
-              DateFormat.yMMMEd().format(DateTime.now())))
-          .toList();
-      setState(() {
-        // myData = json["items"];
-        myData = filterList;
-      });
-      print(myData);
-    }
-  }
+  // Future<void> fetchData() async {
+  //   var url = Uri.parse("https://api.nstack.in/v1/todos");
+  //   var responce = await http.get(url);
+  //   if (responce.statusCode == 200) {
+  //     Map<String, dynamic> json = jsonDecode(responce.body);
+  //     myData = json["items"];
+  //     final filterList = myData
+  //         .where((element) => (DateFormat.yMMMEd()
+  //                 .format(DateTime.parse(element['updated_at'])) ==
+  //             DateFormat.yMMMEd().format(DateTime.now())))
+  //         .toList();
+  //     setState(() {
+  //       // myData = json["items"];
+  //       myData = filterList;
+  //     });
+  //     print(myData);
+  //   }
+  // }
 
   //chek
-  check(
-    bool check,
-    int index,
-    String title,
-    String desc,
-  ) async {
-    final id = myData[index]['_id'];
-    final body = {
-      "title": title,
-      "description": desc,
-      "is_completed": check,
-    };
-    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
-    final responce = await http.put(
-      url,
-      body: jsonEncode(body),
-      headers: {"Content-Type": "application/json"},
-    );
-    print(responce.statusCode);
-    fetchData();
-  }
-
-  //delete
-  deleteById(String id) async {
-    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
-    await http.delete(url);
-    fetchData();
-  }
 }

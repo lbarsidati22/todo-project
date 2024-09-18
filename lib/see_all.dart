@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:todo_project/provider.dart';
 
 import 'create_page.dart';
 
@@ -15,13 +17,13 @@ class SeeAll extends StatefulWidget {
 class _SeeAllState extends State<SeeAll> {
   @override
   void initState() {
-    fetchData();
+    // fetchData();
     super.initState();
   }
 
-  List myData = [];
   @override
   Widget build(BuildContext context) {
+    List myData = Provider.of<Service>(context).allList;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -40,7 +42,7 @@ class _SeeAllState extends State<SeeAll> {
         actions: [
           IconButton(
             onPressed: () {
-              fetchData();
+              Provider.of<Service>(context, listen: false).fetchDataProvider();
             },
             icon: Icon(
               Icons.refresh,
@@ -141,7 +143,11 @@ class _SeeAllState extends State<SeeAll> {
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
-                                                    deleteById(data["_id"]);
+                                                    Provider.of<Service>(
+                                                            context,
+                                                            listen: false)
+                                                        .deleteById(
+                                                            data["_id"]);
                                                     Navigator.pop(context);
                                                   },
                                                   child: Text('Yes'),
@@ -161,11 +167,13 @@ class _SeeAllState extends State<SeeAll> {
                                   Checkbox(
                                       value: data['is_completed'],
                                       onChanged: (value) {
-                                        check(
-                                          value!,
-                                          index,
-                                          data['title'],
-                                          data['description'],
+                                        Provider.of<Service>(context,
+                                                listen: false)
+                                            .check(
+                                          check: value!,
+                                          id2: data["_id"],
+                                          title: data['title'],
+                                          desc: data['description'],
                                         );
                                       })
                                 ],
@@ -181,52 +189,47 @@ class _SeeAllState extends State<SeeAll> {
     );
   }
 
-  Future<void> fetchData() async {
-    var url = Uri.parse("https://api.nstack.in/v1/todos");
-    var responce = await http.get(url);
-    if (responce.statusCode == 200) {
-      Map<String, dynamic> json = jsonDecode(responce.body);
-      myData = json["items"];
-      // final filterList = myData
-      //     .where((element) => (DateFormat.yMMMEd()
-      //             .format(DateTime.parse(element['updated_at'])) ==
-      //         DateFormat.yMMMEd().format(DateTime.now())))
-      //     .toList();
-      setState(() {
-        myData = json["items"];
-        // myData = filterList;
-      });
-      print(myData);
-    }
-  }
+  // Future<void> fetchData() async {
+  //   var url = Uri.parse("https://api.nstack.in/v1/todos");
+  //   var responce = await http.get(url);
+  //   if (responce.statusCode == 200) {
+  //     Map<String, dynamic> json = jsonDecode(responce.body);
+  //     myData = json["items"];
+  //     // final filterList = myData
+  //     //     .where((element) => (DateFormat.yMMMEd()
+  //     //             .format(DateTime.parse(element['updated_at'])) ==
+  //     //         DateFormat.yMMMEd().format(DateTime.now())))
+  //     //     .toList();
+  //     setState(() {
+  //       myData = json["items"];
+  //       // myData = filterList;
+  //     });
+  //     print(myData);
+  //   }
+  // }
 
   //chek
-  check(
-    bool check,
-    int index,
-    String title,
-    String desc,
-  ) async {
-    final id = myData[index]['_id'];
-    final body = {
-      "title": title,
-      "description": desc,
-      "is_completed": check,
-    };
-    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
-    final responce = await http.put(
-      url,
-      body: jsonEncode(body),
-      headers: {"Content-Type": "application/json"},
-    );
-    print(responce.statusCode);
-    fetchData();
-  }
+  // check(
+  //   bool check,
+  //   int index,
+  //   String title,
+  //   String desc,
+  // ) async {
+  //   final id = myData[index]['_id'];
+  //   final body = {
+  //     "title": title,
+  //     "description": desc,
+  //     "is_completed": check,
+  //   };
+  //   var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
+  //   final responce = await http.put(
+  //     url,
+  //     body: jsonEncode(body),
+  //     headers: {"Content-Type": "application/json"},
+  //   );
+  //   print(responce.statusCode);
+  //   fetchData();
+  // }
 
   //delete
-  deleteById(String id) async {
-    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
-    await http.delete(url);
-    fetchData();
-  }
 }

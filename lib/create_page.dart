@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:todo_project/provider.dart';
 
 class CreatePage extends StatefulWidget {
   Map? itemData;
@@ -76,7 +78,18 @@ class _CreatePageState extends State<CreatePage> {
                           ),
                         ),
                         onPressed: () {
-                          isEdit ? updateData() : postData();
+                          isEdit
+                              ? Provider.of<Service>(context, listen: false)
+                                  .updateData(
+                                      id1: widget.itemData!['_id'],
+                                      title: titleCon.text,
+                                      desc: descorationCon.text,
+                                      context: context)
+                              : Provider.of<Service>(context, listen: false)
+                                  .postData(
+                                      title: titleCon.text,
+                                      desc: descorationCon.text,
+                                      context: context);
                         },
                         child: Text(isEdit ? 'update' : "Create"),
                       ),
@@ -89,66 +102,5 @@ class _CreatePageState extends State<CreatePage> {
         ),
       ),
     );
-  }
-
-  //post
-  Future<void> postData() async {
-    final body = {
-      "title": titleCon.text,
-      "description": descorationCon.text,
-      "is_completed": false,
-    };
-    var url = Uri.parse("https://api.nstack.in/v1/todos");
-    var responce = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(body),
-    );
-    if (responce.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Created'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Oops samething is rong'),
-        ),
-      );
-    }
-  }
-
-  //update
-  updateData() async {
-    final id = widget.itemData!['_id'];
-    final body = {
-      "title": titleCon.text,
-      "description": descorationCon.text,
-      "is_completed": false,
-    };
-    var url = Uri.parse("https://api.nstack.in/v1/todos/$id");
-    final responce = await http.put(
-      url,
-      body: jsonEncode(body),
-      headers: {"Content-Type": "application/json"},
-    );
-    if (responce.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Updated'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Oops samething is rong'),
-        ),
-      );
-    }
   }
 }
