@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:todo_project/provider.dart';
+import 'package:todo_project/style_colors.dart';
 
 class CreatePage extends StatefulWidget {
   Map? itemData;
@@ -29,18 +30,24 @@ class _CreatePageState extends State<CreatePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
+    return Container(
+      decoration: BoxDecoration(
+        color: kBlackColor,
+      ),
+      child: Padding(
         padding: EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('task Title'),
+              SizedBox(
+                height: 11,
+              ),
               TextField(
                 controller: titleCon,
                 decoration: InputDecoration(
+                  hintText: 'tap title here...',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(17),
@@ -52,9 +59,14 @@ class _CreatePageState extends State<CreatePage> {
                 height: 12,
               ),
               Text('task descreption'),
+              SizedBox(
+                height: 11,
+              ),
               TextField(
+                maxLines: 5,
                 controller: descorationCon,
                 decoration: InputDecoration(
+                  hintText: 'tap descreption here...',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(17),
@@ -72,7 +84,7 @@ class _CreatePageState extends State<CreatePage> {
                       height: 55,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(.6),
+                          backgroundColor: kDrangColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(17),
                           ),
@@ -91,7 +103,12 @@ class _CreatePageState extends State<CreatePage> {
                                       desc: descorationCon.text,
                                       context: context);
                         },
-                        child: Text(isEdit ? 'update' : "Create"),
+                        child: Text(
+                          isEdit ? 'update' : "Create",
+                          style: TextStyle(
+                            color: kWhightColor,
+                          ),
+                        ),
                       ),
                     ),
                   ),

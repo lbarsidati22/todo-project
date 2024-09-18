@@ -25,20 +25,33 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     List myData = Provider.of<Service>(context).myData;
     return Scaffold(
+      key: key,
       backgroundColor: kBlackColor,
       floatingActionButton: FloatingActionButton(
         backgroundColor: kDrangColor,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreatePage(),
-            ),
+          key.currentState!.showBottomSheet(
+            (context) => CreatePage(),
           );
+          // showBottomSheet(
+          //     context: context,
+          //     builder: (context) {
+          //       return Container(
+          //         height: 200,
+          //         color: kDrangColor,
+          //       );
+          //     });
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => CreatePage(),
+          //   ),
+          // );
         },
         child: Icon(
           Icons.add,
@@ -207,14 +220,10 @@ class _HomePageState extends State<HomePage> {
                                   Spacer(),
                                   IconButton(
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (contest) => CreatePage(
-                                            itemData: data,
-                                          ),
-                                        ),
-                                      );
+                                      key.currentState!.showBottomSheet(
+                                          (context) => CreatePage(
+                                                itemData: data,
+                                              ));
                                     },
                                     icon: Icon(
                                       Icons.edit,
