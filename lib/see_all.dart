@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:todo_project/provider.dart';
+import 'package:todo_project/style_colors.dart';
 
 import 'create_page.dart';
 
@@ -21,17 +22,19 @@ class _SeeAllState extends State<SeeAll> {
     super.initState();
   }
 
+  final GlobalKey<ScaffoldState> key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     List myData = Provider.of<Service>(context).allList;
     return Scaffold(
+      backgroundColor: kBlackColor,
+      key: key,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: kDrangColor,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreatePage(),
-            ),
+          key.currentState!.showBottomSheet(
+            (context) => CreatePage(),
           );
         },
         child: Icon(
@@ -39,20 +42,31 @@ class _SeeAllState extends State<SeeAll> {
         ),
       ),
       appBar: AppBar(
+        excludeHeaderSemantics: false,
         actions: [
           IconButton(
+            style: IconButton.styleFrom(
+              backgroundColor: kGreyColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(12),
+                ),
+              ),
+            ),
             onPressed: () {
               Provider.of<Service>(context, listen: false).fetchDataProvider();
             },
             icon: Icon(
+              color: kWhightColor,
               Icons.refresh,
             ),
           ),
         ],
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'All Tasks',
           style: TextStyle(
+            color: kWhightColor,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -74,7 +88,8 @@ class _SeeAllState extends State<SeeAll> {
                             14,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.blue.withOpacity(.5),
+                            color: kBlack2Color,
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,6 +113,9 @@ class _SeeAllState extends State<SeeAll> {
                                   Expanded(
                                     child: Text(
                                       data['description'],
+                                      style: TextStyle(
+                                        color: kGreyColor,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -110,20 +128,22 @@ class _SeeAllState extends State<SeeAll> {
                                         data['created_at'].toString(),
                                       ),
                                     ),
+                                    style: TextStyle(
+                                      color: kGreyColor,
+                                    ),
                                   ),
                                   Spacer(),
                                   IconButton(
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (contest) => CreatePage(
-                                            itemData: data,
-                                          ),
-                                        ),
-                                      );
+                                      key.currentState!.showBottomSheet(
+                                          (context) => CreatePage(
+                                                itemData: data,
+                                              ));
                                     },
-                                    icon: Icon(Icons.edit),
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: kGreenColor,
+                                    ),
                                   ),
                                   IconButton(
                                     onPressed: () {
@@ -131,10 +151,16 @@ class _SeeAllState extends State<SeeAll> {
                                           context: context,
                                           builder: (context) {
                                             return AlertDialog(
+                                              backgroundColor: kBlack2Color,
                                               icon: Icon(
-                                                Icons.wrong_location,
+                                                Icons.warning,
+                                                color: kRedColor,
+                                                size: 35,
                                               ),
-                                              title: Text('Alertt'),
+                                              title: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text('Alertt'),
+                                              ),
                                               shadowColor: Colors.black,
                                               elevation: 40,
                                               content: Text(
@@ -142,37 +168,57 @@ class _SeeAllState extends State<SeeAll> {
                                               ),
                                               actions: [
                                                 TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    backgroundColor: kRedColor,
+                                                  ),
                                                   onPressed: () {
                                                     Provider.of<Service>(
-                                                            context,
-                                                            listen: false)
+                                                            context)
                                                         .deleteById(
-                                                            data["_id"]);
+                                                      data["_id"],
+                                                    );
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('Yes'),
+                                                  child: Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                        color: kWhightColor),
+                                                  ),
                                                 ),
                                                 TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    backgroundColor: kGreyColor,
+                                                  ),
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: Text('No'),
+                                                  child: Text('No',
+                                                      style: TextStyle(
+                                                          color: kWhightColor)),
                                                 )
                                               ],
                                             );
                                           });
                                     },
-                                    icon: Icon(Icons.delete),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: kRedColor,
+                                    ),
                                   ),
                                   Checkbox(
+                                      side: BorderSide(
+                                        color: kWhightColor,
+                                      ),
+                                      shape: CircleBorder(
+                                          side: BorderSide(
+                                        color: kWhightColor,
+                                      )),
                                       value: data['is_completed'],
                                       onChanged: (value) {
-                                        Provider.of<Service>(context,
-                                                listen: false)
-                                            .check(
+                                        Provider.of<Service>(context).check(
                                           check: value!,
-                                          id2: data["_id"],
                                           title: data['title'],
+                                          id2: data['_id'],
                                           desc: data['description'],
                                         );
                                       })
